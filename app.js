@@ -1,104 +1,100 @@
-var workTimer = 25;
-var breakTimer = 4;
-// 0 = work/ 1 = break
+var timeSet;
+// 0 work timer, 1 break timer
 var timerStatus = 0;
-// 0 = off / 1 = on
-var clockStatus = 0;
-// minutes and seconds
-var minutes = 0;
-var seconds = 0;
 
-var workInterval;
-var breakInterval;
-
-function runTimer(clock,interval) {
-  //$("#clock").html(clock);
-  //console.log(minutes + ":" + seconds);
-  if (minutes === 0 && seconds === 0) {
-    console.log(minutes + ":" + seconds)
-    switch(timerStatus){
-      case 0:
-        timerStatus = 1;
-        break;
-      case 1:
-        timerStatus = 0;
-        break;
+function changeTimer(str, change, arr){
+  if(change == "plus"){
+    arr[0] += 1
+    $(str).html(arr[0] + ":00")
+  }else{
+    if(arr[0] > 0){
+      arr[0] -= 1
+      $(str).html(arr[0] + ":00")
     }
-    clearInterval(interval)
-    switchClocks()
-
-  } else if (seconds == 0) {
-    minutes -= 1;
-    seconds = 59;
-    $("#clock").html(minutes + ":" + seconds);
-  } else if( seconds < 11 && seconds > 0) {
-    seconds -=1;
-    $("#clock").html(minutes + ":0" + seconds);
-
-  }else {
-    seconds -= 1;
-    $("#clock").html(minutes + ":" + seconds);
   }
-
 }
-// function to switch what the clocks are doing
-function switchClocks() {
-  if(timerStatus == 0){
-  minutes = workTimer;
-    $("#clock").html(workTimer + ":00");
-  workInterval = setInterval(function(){runTimer(workTimer,workInterval)}, 1000);
-  }else{
-    $("#clock").html(breakTimer + ":00");
-  minutes = breakTimer;
-  breakInterval = setInterval(function(){runTimer(workTimer,breakInterval)}, 1000);
-}
-}
-//adding and subtracting time.
-//worktimer buttons
-$("#work-add").click(function() {
-  workTimer += 1;
-  $("#work-timer").html(workTimer);
-})
-$("#work-sub").click(function() {
-  if (workTimer > 0) {
-    workTimer -= 1;
-    $("#work-timer").html(workTimer);
-  }
-})
 
-//breakTimer buttons
-$("#break-add").click(function() {
-  breakTimer += 1;
-  $("#break-timer").html(breakTimer);
-})
-$("#break-sub").click(function() {
-  if (breakTimer > 0) {
-    breakTimer -= 1;
-    $("#break-timer").html(breakTimer);
-  }
-})
-
-$("#start-button").click(function() {
-  if(clockStatus == 0){
-    switchClocks();
-    $("#start-button").html("reset");
-    clockStatus = 1
-  }else{
-    $("#clock").html("0");
-    $("#start-button").html("start");
-    seconds = 0;
-    clockStatus = 0;
-
-    if(timerStatus === 0){
-      clearInterval(workInterval);
+function timer(timer){
+  console.log("in")
+  var arr = getTime(timer)
+  var tick = 100/((arr[0]*60)+ arr[1])
+  var percentage = 100;
+    timeSet = setInterval(function(){
+    if(arr[1] == 0){
+      arr[0] -= 1
+      arr[1] = 59
+      percentage -= tick;
+      $("#timer").html(arr[0]+ ":" + arr[1]);
+      $(".fill-clock").css("height", percentage+"%")
+    }else if(arr[0] == 0 && arr[1] == 1){
+      $("#timer").html("0:00");
+      $(".fill-clock").css("height", "0%")
+      clearInterval(timeSet)
+      newTimer()
     }else{
-      clearInterval(breakInterval);
-      timerStatus = 0;
+      arr[1] -= 1
+      if(arr[1] > 9){
+        $("#timer").html(arr[0]+ ":" + arr[1]);
+      }else{
+        $("#timer").html(arr[0]+ ":0" + arr[1]);
+      }
+      percentage -= tick;
+      $(".fill-clock").css("height", percentage+"%")
     }
-  }
+  },1000)
+}
 
-})
+function newTimer(){
+  if(timerStatus == 0){
+    timerStatus = 1;
+    timer("#break-timer")
+  }else{
+    timerStatus = 0;
+    timer("#work-timer")
+  }
+}
+
+function getTime(str){
+  var time = $(str).html();
+  var arr = time.split(":");
+  return [parseInt(arr[0]),parseInt(arr[1])]
+}
+
+
 $(document).ready(function(){
-  $("#work-timer").html(workTimer);
-  $("#break-timer").html(breakTimer);
+  //setting the work timer with buttons
+  $("#work-plus").on("click", function(){
+    changeTimer("#work-timer", "plus", getTime("#work-timer"))
+  })
+  $("#work-minus").on("click", function(){
+    changeTimer("#work-timer", "minus", getTime("#work-timer"))
+  })
+  //seting the break timer with buttons
+  $("#break-minus").on("click", function(){
+    changeTimer("#break-timer", "minus", getTime("#break-timer"))
+  })
+  $("#break-plus").on("click", function(){
+    changeTimer("#break-timer", "plus", getTime("#break-timer"))
+  })
+  //sarting the clock
+  $("#start").on('click', function(){
+    timer("#work-timer")
+  })
+  //pause Timer
+  $("#pause").on("click", function(){
+    if(timerStatus == 0){
+      $("#work-timer").html($("#timer").html())
+      clearInterval(timeSet)
+    }else{
+      $("#break-timer").html($("#timer").html())
+      clearInterval(timeSet)
+    }
+
+  })
+  //stop timer
+  $("#stop").on("click",function(){
+    $("#timer").html("0:00");
+    $(".fill-clock").css("height", "100%")
+    clearInterval(timeSet)
+  })
 })

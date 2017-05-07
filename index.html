@@ -1,27 +1,58 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title> Pomodoro timer</title>
-    <link rel="stylesheet" href="main.css">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./main.css">
   </head>
   <body>
-    <p>Time amout</p>
-    <h1 id="work-timer">0</h1>
-    <div class="clock-buttons">
-      <button id="start-button">start</button>
-      <button id="work-add">+</button>
-      <button id="work-sub">-</button>
+    <div class="container">
+        <div class="roe">
+          <div class="col-xs-4">
+
+          </div>
+          <div class="col-xs-4">
+              <h1>Pomodoro Timer</h1>
+              <br>
+              <h4>Take a Break</h4>
+              <br>
+              <button id='start'> Start</button>
+              <button id='pause'> Pause</button>
+              <button id='stop'> Stop</button>
+              <br>
+              <br>
+              <div class="clock">
+                <div class="fill-clock">
+                  <p id="timer">0:00</p>
+                </div>
+              </div>
+
+              <div class="setup">
+                <h3>Work Timer</h3>
+                <div class="timer-inline">
+                  <button id="work-plus">+</button>
+                  <p id="work-timer" class="middle">25:00</p>
+                  <button id="work-minus">-</button>
+                </div>
+                <br>
+                <br>
+                <h3>Break Timer</h3>
+                <div class="timer-inline">
+                  <button id="break-plus">+</button>
+                  <p id="break-timer" class="middle">5:00</p>
+                  <button id="break-minus">-</button>
+                </div>
+
+              </div>
+
+          </div>
+          <div class="col-xs-4">
+
+          </div>
+        </div>
     </div>
-    <div class="break-buttons">
-      <p>Break</p>
-      <h1 id="break-timer">0</h1>
-      <button id="break-add">+</button>
-      <button id="break-sub">-</button>
-    </div>
-    <h1 id="clock">0</h1>
-    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script src="app.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="./app.js"></script>
   </body>
 </html>
